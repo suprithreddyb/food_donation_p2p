@@ -7,6 +7,10 @@ import morgan from "morgan"; // Import morgan
 import connectDB from "./db/dbConnect.js";
 import { config } from "./config.js";
 import authRouter from "./routes/authRouter.js";
+import createRouter from "./routes/createRouter.js";
+import userRouter from "./routes/userRouter.js";
+import applicationRouter from "./routes/applicationRouter.js";
+import orderRouter from "./routes/orderRouter.js";
 const app = express();
 
 // middlewares
@@ -30,6 +34,10 @@ connectDB();
 
 
 app.use("/api/auth", authRouter);
+app.use( "/api/create", createRouter );
+app.use( "/api/my", userRouter );
+app.use( "/api/application", applicationRouter );
+app.use( "/api/order", orderRouter );
 
 
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
