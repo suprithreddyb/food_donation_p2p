@@ -27,7 +27,7 @@ const orderSchema = new Schema(
     distance : Number,
     ownerId: { type: Schema.Types.ObjectId, ref: "user", default: null },
     volunteerId: { type: Schema.Types.ObjectId, ref: "user", default: null },
-    expiresAt: { type: Date, default: null },
+    expiresAt: { type: String, default: null },
     urgency: {
       type : Number,
       enum : [ 0, 1, 2 ]
