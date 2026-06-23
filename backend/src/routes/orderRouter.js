@@ -6,6 +6,6 @@ const orderRouter = Router();
 orderRouter.post( "/new/donation", newDonation );
 orderRouter.post( "/new/request", newRequest );
 
-orderRouter.get( "/orders", viewOrders )
+orderRouter.patch( "/orders", viewOrders )
 
 export default orderRouter;

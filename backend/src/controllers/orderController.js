@@ -1,4 +1,5 @@
 import { Order } from "../models/order.model.js";
+import mongoose from "mongoose";
 
 export const newDonation = async ( req, res ) => {
     try{
@@ -39,7 +40,8 @@ export const newRequest = async ( req, res ) => {
 export const viewOrders = async ( req, res ) => {
     try{
         const userCoordinates = req.body.user.coordinates;
-        
+        const userId = req.body.user.id;
+
         const type = req.query.type; //donation and request
         const sortBy = req.query.sortBy;
         const sortType = Number( req.query.sortType );
@@ -55,6 +57,7 @@ export const viewOrders = async ( req, res ) => {
                     spherical : true,
                     query : {
                         isActive : true,
+                        ownerId : { $ne : new mongoose.Types.ObjectId( userId ) },
                         type : type
                     }
                 }

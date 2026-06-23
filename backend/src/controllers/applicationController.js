@@ -21,10 +21,10 @@ export const apply = async ( req, res ) => {
         }
         exists = await Application.findOne( { orderId : orderId, volunteerId : userId, status : "pending" } );
         if ( exists ){
-            return res.status( 409 ).json( { message : "application was already sent", data : exists } );
+            return res.status( 200 ).json( { message : "application was already sent", data : exists } );
         }
         const application = await Application.create( { orderId : orderId, volunteerId : userId, volunteerLocation : { coordinates : userCoordinates }, distance : distance } );
-        return res.status( 201 ).json( {message : "creted new application", data : application } );
+        return res.status( 201 ).json( {message : "created new application", data : application } );
     }
     catch ( err ){
         return res.status( 500 ).json( { message: "internal server error", error : err.message } );

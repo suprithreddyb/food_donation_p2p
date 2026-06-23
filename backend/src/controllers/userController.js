@@ -1,6 +1,20 @@
 import { Application } from "../models/application.model.js";
 import { Order } from "../models/order.model.js";
 import mongoose from "mongoose";
+import { User } from "../models/user/user.model.js";
+
+export const getProfile = async ( req, res ) => {
+    try{
+        const userId = req.body.user.id;
+        const profile = await User.findById( userId );
+        if ( !profile ){
+            return res.status( 404 ).json( { message : "user not found", data })
+        }
+    }
+    catch ( err ) {
+        return res.status( 500 ).json( { message : "internal server error", error : err.message } );
+    }
+}
 
 export const outgoingApplications = async ( req, res ) => {
     try{
