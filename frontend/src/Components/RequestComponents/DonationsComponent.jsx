@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react'
 import Service from '../../utils/http';
 import { Button, Card, Container, Group, NativeSelect, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import OrderDetailsModal from '../Modals/orderDetailsModal';
 
 export default function DonationsComponent( { setNewRequest } ) {
   const [ donations, setDonations ] = useState( null );
+  const [ orderDetails, setOrderDetails ] = useState( null );
+  const [ showModal, setShowModal ] = useState( false );
   const service = new Service();
   const [ filters, setFilters ] = useState( {
     sortBy: "createdAt",
@@ -12,7 +15,7 @@ export default function DonationsComponent( { setNewRequest } ) {
   });
   const userBody = {
     user : { 
-      id : "6a2a5f14a62527eabb79755c",
+      id : "6a3e0fbf876ef54ea1bd06f1",
       coordinates : [ 1, 2 ]
     }
   }
@@ -27,7 +30,7 @@ export default function DonationsComponent( { setNewRequest } ) {
       const application = await service.post( `application/apply/${orderId}`, { ...userBody, distance : dist } );
       notifications.show( {
         title : ( application.message === "created new application" ? "Success" : "Failed" ),
-        message : application.message
+        message : application.message === "created new application" ? "Sent request" : application.message
       })
     }
     catch ( err ){
@@ -51,6 +54,10 @@ export default function DonationsComponent( { setNewRequest } ) {
             border: "1px solid rgba(255, 255, 255, 0.2)",
             borderRadius: "30px",
             boxShadow: "0 8px 40px rgba(0, 0, 0, 0.2)",
+            cursor:"pointer",
+          }}
+          onClick={()=>{
+            setOrderDetails( order )
           }}>
             <Group justify="space-between">
               <Text fw={500}>Qty: <Text span c="#545050">{order.qty}</Text></Text>
@@ -87,6 +94,7 @@ export default function DonationsComponent( { setNewRequest } ) {
       </div>
       <Container>
         <div>
+          {orderDetails !== null ? <OrderDetailsModal type="order" showModal={showModal} setShowModal={setShowModal} orderDetails={orderDetails} setOrderDetails={setOrderDetails} /> : <></> }
           <Group justify="left">
             <NativeSelect size="md" radius="lg" label="Sort By" data={[ "Date Posted", "Qty", "Distance", "Urgency" ] } onChange={ (e ) => {
               setFilters( { ...filters, sortBy : { "Date Posted" : "createdAt", "Qty" : "qty", "Distance" : "dist", "Urgency" : "urgency"}[ e.target.value ] } )

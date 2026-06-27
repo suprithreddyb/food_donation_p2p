@@ -5,7 +5,6 @@ const createRouter = Router();
 
 
 createRouter.post( "/user", createUser);
-// createRouter.post( "/application", );
 
 
 export default createRouter;

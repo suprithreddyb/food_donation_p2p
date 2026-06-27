@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react'
 import Service from '../../utils/http';
 import { Button, Card, Container, Group, NativeSelect, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import OrderDetailsModal from '../Modals/orderDetailsModal';
 
 export default function RequestsComponent( { setNewDonation } ) {
   const [ requests, setRequests ] = useState( null );
+  const [ orderDetails, setOrderDetails ] = useState( null );
+  const [ showModal, setShowModal ] = useState( false );
   const service = new Service();
   const [ filters, setFilters ] = useState( {
     sortBy: "createdAt",
@@ -12,7 +15,7 @@ export default function RequestsComponent( { setNewDonation } ) {
   });
   const userBody = {
     user : { 
-      id : "6a2a5f14a62527eabb79755c",
+      id : "6a3e0fbf876ef54ea1bd06f1",
       coordinates : [ 1, 2 ]
     }
   }
@@ -22,12 +25,12 @@ export default function RequestsComponent( { setNewDonation } ) {
     return data.data;
   }
 
-  const apply = async (orderId, dist) => {
+  const apply = async (orderId, dist ) => {
     try{
       const application = await service.post( `application/apply/${orderId}`, { ...userBody, distance : dist } );
       notifications.show( {
         title : ( application.message === "created new application" ? "Success" : "Failed" ),
-        message : application.message
+        message : ( application.message === "created new application" ? "Applied to donate" : application.message )
       })
     }
     catch ( err ){
@@ -36,6 +39,10 @@ export default function RequestsComponent( { setNewDonation } ) {
         message : "Something went wrong"
       })
     }
+  }
+
+  const handleClick = ( order ) => {
+    return <div>Card</div>
   }
 
   useEffect( () => {
@@ -51,6 +58,10 @@ export default function RequestsComponent( { setNewDonation } ) {
             border: "1px solid rgba(255, 255, 255, 0.2)",
             borderRadius: "30px",
             boxShadow: "0 8px 40px rgba(0, 0, 0, 0.2)",
+            cursor: "pointer"
+          }}
+          onClick={()=>{
+            setOrderDetails( order )
           }}>
             <Group justify="space-between">
               <Text fw={500}>Qty: <Text span c="#545050">{order.qty}</Text></Text>
@@ -69,25 +80,35 @@ export default function RequestsComponent( { setNewDonation } ) {
     }
     loadData();
   }, [ filters] );
-
+  
   return (
     <div style={{
-        height: "100vh",
-        width: "100%",
-        background: "linear-gradient(135deg, #d9afd9 0%, #97d9e1 100%)",
-        position: "relative",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-      }}>
+      height: "100vh",
+      width: "100%",
+      background: "linear-gradient(135deg, #d9afd9 0%, #97d9e1 100%)",
+      position: "relative",
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+    }}>
       <div>
         <Button variant="filled" top={10} left={10} onClick ={() => {
           setNewDonation( true )
         } }>New</Button>
       </div>
       <Container>
+        {
+          orderDetails !== null ?
+          <OrderDetailsModal  type="order"
+            showModal={showModal} 
+            setShowModal={setShowModal}
+            orderDetails={orderDetails}
+            setOrderDetails={setOrderDetails}
+          />: 
+          <></>
+        }
         <div>
-          <Group justify="left">
+          <Group justify="left" mb="lg">
             <NativeSelect size="md" radius="lg" label="Sort By" data={[ "Date Posted", "Qty", "Distance", "Urgency" ] } onChange={ (e ) => {
               setFilters( { ...filters, sortBy : { "Date Posted" : "createdAt", "Qty" : "qty", "Distance" : "dist", "Urgency" : "urgency"}[ e.target.value ] } )
             } } />
