@@ -80,7 +80,7 @@ export const incomingApplications = async ( req, res ) => {
         if ( typeof(status) === "string" ){
             status = [ status ];
         }
-        const sortBy = req.query.sortBy;
+        const sortBy = { "createdAt" : "createdAt", "qty" : "order.qty", "urgency" : "order.urgency", "distance" : "distance" }[ req.query.sortBy ];
         const sortType = Number( req.query.sortType );
         const applications = await Application.aggregate( [ 
             {
@@ -119,12 +119,18 @@ export const getOrders = async ( req, res ) => {
     try{
         const userId = req.body.user.id;
 
-        const types = req.query.types; //donation request
-        const sortBy = req.query.sortBy;
+        let types = req.query.types; //donation request
+        if ( typeof( types ) === "string" ){
+            types = [ types ];
+        }
+        const sortBy = req.query.sortBy
         const sortType = Number( req.query.sortType );
-        const filters = req.query.filters; //isActive : true, false;
+        let status = req.query.status; //isActive : true, false;
+        if ( typeof( status ) === "string" ){
+            status = [ status ]
+        }
 
-        const orders = await Order.find( { ownerId : userId, type : { $in : types }, isActive: { $in : filters } } ).sort( { [ sortBy ] : sortType } );
+        const orders = await Order.find( { ownerId : userId, type : { $in : types }, isActive: { $in : status } } ).sort( { [ sortBy ] : sortType } );
         return res.status( 200 ).json( { message : "fetched orders", data : orders } );
     }
     catch ( err ){
@@ -134,12 +140,14 @@ export const getOrders = async ( req, res ) => {
 
 export const deleteOrder = async ( req, res ) => {
     try{
+        const userId = req.body.user.id;
         const orderId = req.params.orderId;
-        const order = Order.findByIdAndDelete( orderId );
-        if ( order ){
-            return res.status( 201 ).json( { message : "deleted order", data : order } );
+        let order = await Order.findById( orderId );
+        if ( !order || userId !== order.ownerId.toString() ){
+            return res.status( 404 ).json( { message : "order not found", data : orderId });
         }
-        return res.status( 404 ).json( { message : "order not found", data : orderId });
+        order = await Order.findByIdAndDelete( orderId );
+        return res.status( 200 ).json( { message : "deleted order", data : order } );
     }
     catch ( err ){
         return res.status( 500 ).json( { message : "internal server error", error: err.message } );

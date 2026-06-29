@@ -15,8 +15,8 @@ export default function DonationsComponent( { setNewRequest } ) {
   });
   const userBody = {
     user : { 
-      id : "6a3e0fbf876ef54ea1bd06f1",
-      coordinates : [ 1, 2 ]
+      id : "6a2a5f2ea62527eabb79755e",
+      coordinates : [ 3, 4 ]
     }
   }
 

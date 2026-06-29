@@ -15,7 +15,8 @@ userRouter.get( "/applications/outgoing", outgoingApplications );
 userRouter.patch( "/applications/outgoing", outgoingApplications );
 
 userRouter.get( "/orders", getOrders );
-userRouter.patch( "/order/delete/:orderId", deleteOrder )
+userRouter.patch( "/orders", getOrders );
+userRouter.delete( "/order/delete/:orderId", deleteOrder )
 
 
 export default userRouter;
