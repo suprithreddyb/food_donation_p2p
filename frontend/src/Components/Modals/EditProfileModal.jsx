@@ -3,21 +3,17 @@ import React from 'react'
 import { dsiplayLocation } from '../DashboardComponents/LocationComponent';
 import Service from '../../utils/http';
 
-export default function EditProfileModal( { setEdit, edit, profile, setProfile }) {
+export default function EditProfileModal( { reRender, setReRender, setEdit, edit, profile, setProfile }) {
   const service = new Service();
   
   const editProfile = async() => {
     const profileData = await service.patch( "my/profile/edit", { 
-      user : { 
-        id : "6a3e0fbf876ef54ea1bd06f1",
-        coordinates : [ 1, 2 ]
-      },
       data : {...profile, location : {
         type: "Point",
         coordinates: [ profile.location.lat, profile.location.long ]
       }}
     } );
-    return profileData;
+    setReRender( !reRender );
   }
 
 
@@ -45,9 +41,7 @@ export default function EditProfileModal( { setEdit, edit, profile, setProfile }
           radius="sm"
           label="Email"
           placeholder={profile.email}
-          onChange={ (e) => {
-            setProfile( {...profile, name : e.target.value} );
-          }}
+          disabled={true}
         />
         <TextInput
           size="md"
@@ -55,7 +49,7 @@ export default function EditProfileModal( { setEdit, edit, profile, setProfile }
           label="Phone"
           placeholder={profile.phone}
           onChange={ (e) => {
-            setProfile( {...profile, name : e.target.value} );
+            setProfile( {...profile, phone : e.target.value} );
           }}
         />
         {dsiplayLocation( profile.location )}
@@ -78,7 +72,7 @@ export default function EditProfileModal( { setEdit, edit, profile, setProfile }
           <Button onClick={(e)=>{
             editProfile()
             setEdit( false )
-          }}>Edit</Button>
+          }}>Edit</Button> 
         </div>
       </Modal>
     </div>

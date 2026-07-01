@@ -43,7 +43,7 @@ export const loginWithGoogle = async (req, res) => {
 
         console.log("Finding the user from mongodb");
         let user = await userModel.findOne({ email });
-
+        let createdNewUser = false;
         // if user is not present then we will sign it up by creating the record of user
         if(!user) {
 
@@ -56,6 +56,9 @@ export const loginWithGoogle = async (req, res) => {
                     avatar: picture,
                     role: 'user'
                 });
+                if ( user ){
+                    createdNewUser = true;
+                }
 
             } catch (error) {
                 console.log("Error occurred while creating the user in mongodb in loginWithGoogle", error.message);
@@ -64,7 +67,7 @@ export const loginWithGoogle = async (req, res) => {
         } 
 
         console.log("Generating the jwt token for user.");
-        const userToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" })
+        const userToken = jwt.sign({ id: user._id, role: user.role,  }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
         console.log("Token Generated. Setting the token to cookies as jwt.");
         res.cookie("jwt", 
@@ -83,7 +86,8 @@ export const loginWithGoogle = async (req, res) => {
                 name: user.name, 
                 email: user.email, 
                 token: userToken, 
-                avatar: user.avatar 
+                avatar: user.avatar,
+                createdNewUser : createdNewUser
             } 
         });
 

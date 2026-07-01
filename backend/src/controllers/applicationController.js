@@ -5,8 +5,8 @@ import { Order } from "../models/order.model.js";
 
 export const apply = async ( req, res ) => {
     try{
-        const userId = req.body.user.id;
-        const userCoordinates = req.body.user.coordinates;
+        const userId = req.user.id;
+        const userCoordinates = req.user.coordinates;
         
         const orderId = req.params.orderId;
 
@@ -33,7 +33,7 @@ export const apply = async ( req, res ) => {
 
 export const withdraw = async ( req, res  ) => {
     try{
-        const userId = req.body.user.id;
+        const userId = req.user.id;
 
         const applicationId = req.params.applicationId;
         
@@ -54,8 +54,8 @@ export const withdraw = async ( req, res  ) => {
 
 export const performTask = async ( req, res ) => {
     try{
-        const userId = req.body.user.id;
-        const userCoordinates = req.body.user.coordinates;
+        const userId = req.user.id;
+        const userCoordinates = req.user.coordinates;
 
         const applicationId = req.params.applicationId;
         

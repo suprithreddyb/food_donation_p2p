@@ -12,16 +12,11 @@ export default function ApplicationsComponent() {
   const [ applications, setApplications ] = useState( null );
   const [ orderDetails, setOrderDetails ] = useState( null );
   const [ showModal, setShowModal ] = useState( false );
+  const [ reRender, setReRender ] = useState( false );
   const [ sorter, setSorter ] = useState( {
     sortBy : "createdAt",
     sortType : -1
   });
-  const userBody = {
-    user : { 
-      id : "6a3e0fbf876ef54ea1bd06f1",
-      coordinates : [ 1, 2 ]
-    }
-  }
 
   const [ sortOptions, setSortOptions ] = useState( [ 
     "Date Posted",
@@ -36,24 +31,27 @@ export default function ApplicationsComponent() {
       const data = await service.patch( `application/task/${applicationId}`, { ...userBody, task : "approved" });
       notifications.show( {
         title : data.message==="task performed on application" ? "Success" : "Failed",
-        message : data.message==="task performed on application" ? "Approved application" : data.message
+        message : data.message==="task performed on application" ? "Approved application" : data.message,
+        color : data.message === "task performed on application" ? "Blue" : "Red"
       })
     }
     else if ( type === "incoming" ){
       const data = await service.patch ( `application/task/${applicationId}`, { ...userBody, task : "rejected"});
       notifications.show( {
         title : data.message === "task performed on application" ? "Success" : "Failed",
-        message : data.message === "task performed on application" ? "Rejected application" : data.message
+        message : data.message === "task performed on application" ? "Rejected application" : data.message,
+        color : data.message === "task performed on application" ? "blue" : "red"
       })
     }
     else{
       const data = await service.delete( `application/withdraw/${applicationId}`, userBody );
       notifications.show( {
         title : data.message === "deleted application" ? "Success" : "Failed",
-        message : data.message === "deleted application" ? "Application withdrawn" : data.message
+        message : data.message === "deleted application" ? "Application withdrawn" : data.message,
+        color : data.message === "deleted application" ? "blue" : "red"
       })
     }
-    setSorter( { ...sorter } );
+    setReRender( !reRender );
   }
 
   const getApplications = async () => {
@@ -63,13 +61,13 @@ export default function ApplicationsComponent() {
     for ( let key of status ){
       url = url + `&status=${key}`
     }
-    const data = ( await service.patch( url, userBody ) ).data;
+    const data = ( await service.get( url ) ).data;
     setApplications( data )
   }
 
   useEffect( ()=> {
     getApplications();
-  }, [ type, status, sorter, filters ])
+  }, [ type, status, sorter, filters, reRender ])
 
   const dsiplayApplications = () => {
     if ( !applications ){

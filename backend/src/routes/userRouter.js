@@ -1,22 +1,22 @@
 // src/routes/userRouter.js (or .ts)
 import { Router } from 'express';
-import { deleteOrder, editProfile, getOrders, getProfile, incomingApplications, outgoingApplications } from '../controllers/userController.js';
-
+import { deleteOrder, editProfile, getOrders, getPrivateProfile, getPublicProfile, incomingApplications, outgoingApplications } from '../controllers/userController.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 const userRouter = Router();
 
-userRouter.get( "/profile/:userId", getProfile );
-userRouter.patch( "/profile", getProfile );
-userRouter.patch( "/profile/edit", editProfile );
+userRouter.get( "/profile", protect, getPrivateProfile );
+userRouter.get( "/profile/:userId", getPublicProfile );
+userRouter.patch( "/profile/edit", protect,editProfile );
 
-userRouter.get( "/applications/incoming", incomingApplications );
-userRouter.patch( "/applications/incoming", incomingApplications );
-userRouter.get( "/applications/outgoing", outgoingApplications );
-userRouter.patch( "/applications/outgoing", outgoingApplications );
+userRouter.get( "/applications/incoming", protect, incomingApplications );
+// userRouter.patch( "/applications/incoming", protect, incomingApplications );
+userRouter.get( "/applications/outgoing", protect, outgoingApplications );
+// userRouter.patch( "/applications/outgoing", outgoingApplications );
 
-userRouter.get( "/orders", getOrders );
-userRouter.patch( "/orders", getOrders );
-userRouter.delete( "/order/delete/:orderId", deleteOrder )
+userRouter.get( "/orders", protect, getOrders );
+// userRouter.patch( "/orders", getOrders );
+userRouter.delete( "/order/delete/:orderId", protect, deleteOrder )
 
 
 export default userRouter;

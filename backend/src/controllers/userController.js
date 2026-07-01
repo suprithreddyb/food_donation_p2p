@@ -3,9 +3,24 @@ import { Order } from "../models/order.model.js";
 import mongoose, { Mongoose } from "mongoose";
 import { User } from "../models/user/user.model.js";
 
-export const getProfile = async ( req, res ) => {
+export const getPublicProfile = async ( req, res ) => {
     try{
         const userId = req.params.userId;
+        const profile = await User.findById( userId );
+        if ( !profile ){
+            return res.status( 404 ).json( { message : "user not found", data : userId })
+        }
+        return res.status( 200 ).json( { message: "fetched user profile", data: profile } );
+    }
+    catch ( err ) {
+        return res.status( 500 ).json( { message : "internal server error", error : err.message } );
+    }
+}
+
+export const getPrivateProfile = async ( req, res ) => {
+    try{
+        const userId = req.user.id;
+        console.log( "user: " + userId );
         const profile = await User.findById( userId );
         if ( !profile ){
             return res.status( 404 ).json( { message : "user not found", data : userId })
@@ -20,9 +35,8 @@ export const getProfile = async ( req, res ) => {
 export const editProfile = async ( req, res ) => {
     try{
         console.log( "body: " + req.body );
-        const userId = req.body.user.id;
+        const userId = req.user.id;
         var updateData = req.body.data;
-        // updpateData = {...updateData, location: }
         const data = await User.findByIdAndUpdate( userId, updateData );
         return res.status( 201 ).json( { message : "updated profile", data : data } );
     }
@@ -33,7 +47,7 @@ export const editProfile = async ( req, res ) => {
 
 export const outgoingApplications = async ( req, res ) => {
     try{
-        const userId = req.body.user.id;
+        const userId = req.user.id;
         
         const filters = req.query.filters;
         var status = req.query.status;
@@ -73,7 +87,7 @@ export const outgoingApplications = async ( req, res ) => {
 
 export const incomingApplications = async ( req, res ) => {
     try{
-        const userId = req.body.user.id;
+        const userId = req.user.id;
 
         const filters = req.query.filters;
         var status = req.query.status;
@@ -117,7 +131,7 @@ export const incomingApplications = async ( req, res ) => {
 
 export const getOrders = async ( req, res ) => {
     try{
-        const userId = req.body.user.id;
+        const userId = req.user.id;
 
         let types = req.query.types; //donation request
         if ( typeof( types ) === "string" ){
@@ -140,7 +154,7 @@ export const getOrders = async ( req, res ) => {
 
 export const deleteOrder = async ( req, res ) => {
     try{
-        const userId = req.body.user.id;
+        const userId = req.user.id;
         const orderId = req.params.orderId;
         let order = await Order.findById( orderId );
         if ( !order || userId !== order.ownerId.toString() ){

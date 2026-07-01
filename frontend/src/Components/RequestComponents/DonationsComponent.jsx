@@ -13,15 +13,10 @@ export default function DonationsComponent( { setNewRequest } ) {
     sortBy: "createdAt",
     sortType:1
   });
-  const userBody = {
-    user : { 
-      id : "6a2a5f2ea62527eabb79755e",
-      coordinates : [ 3, 4 ]
-    }
-  }
+
 
   const getData = async () => {
-    const data = await service.patch( `order/orders?type=donation&sortBy=${filters.sortBy}&sortType=${filters.sortType}`, userBody );
+    const data = await service.get( `order/orders?type=donation&sortBy=${filters.sortBy}&sortType=${filters.sortType}` );
     return data.data;
   }
 
@@ -30,13 +25,15 @@ export default function DonationsComponent( { setNewRequest } ) {
       const application = await service.post( `application/apply/${orderId}`, { ...userBody, distance : dist } );
       notifications.show( {
         title : ( application.message === "created new application" ? "Success" : "Failed" ),
-        message : application.message === "created new application" ? "Sent request" : application.message
+        message : application.message === "created new application" ? "Sent request" : application.message,
+        color : application.message === "created new application" ? "blue" : "red"
       })
     }
     catch ( err ){
       notifications.show( {
         title : "Failed",
-        message : "Something went wrong"
+        message : "Something went wrong",
+        color : "red"
       })
     }
   }

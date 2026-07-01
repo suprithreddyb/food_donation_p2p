@@ -18,11 +18,7 @@ export default function NewRequestComponent( { setNewRequest } ) {
 
   const [ payload, setPayload ] = useState( {
     qty : 0,
-    urgency : "mid",
-    user: {
-      id: "6a3e0fbf876ef54ea1bd06f1",
-      coordinates: [ 1, 2 ]
-    }
+    urgency : "mid"
   } );
   
   return (

@@ -15,7 +15,6 @@ const userSchema = new Schema({
     },
     phone: {
         type: String,
-        required : true
     },
     role: {
         type: String,
@@ -30,7 +29,7 @@ const userSchema = new Schema({
         },
         coordinates :{
             type : [ Number ],
-            required : true
+            default : [ 0, 0 ]
         }
     }
     

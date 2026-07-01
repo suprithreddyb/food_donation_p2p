@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { newDonation, newRequest, viewOrders } from "../controllers/orderController.js";
+import { protect } from '../middlewares/authMiddleware.js';
 
 const orderRouter = Router();
 
-orderRouter.post( "/new/donation", newDonation );
-orderRouter.post( "/new/request", newRequest );
+orderRouter.post( "/new/donation", protect, newDonation );
+orderRouter.post( "/new/request", protect, newRequest );
 
-orderRouter.patch( "/orders", viewOrders )
+orderRouter.get( "/orders", protect, viewOrders )
 
 export default orderRouter;

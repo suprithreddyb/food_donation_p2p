@@ -4,16 +4,11 @@ import { Avatar, Button, Container, Group, Modal, Stack, Text } from '@mantine/c
 import {dsiplayLocation} from './LocationComponent.jsx';
 import EditProfileModal from '../Modals/EditProfileModal.jsx';
 
-export default function ProfileComponent() {
+export default function ProfileComponent({ editState }) {
   const [ profile, setProfile ] = useState( [] );
   const [ edit, setEdit ] = useState( false );
   const service = new Service();
-  const userBody = {
-    user : { 
-      id : "6a3e0fbf876ef54ea1bd06f1",
-      coordinates : [ 1, 2 ]
-    }
-  }
+  const [ reRender, setReRender ] = useState( false );
 
   const toReact = ( profileData ) =>{
     const arr = []
@@ -42,7 +37,7 @@ export default function ProfileComponent() {
   
   useEffect( ()=> {
     const loadData = async () => {
-      const data = await service.get( `my/profile/${userBody.user.id}` );
+      const data = await service.get( `my/profile` );
       const profileData = {
         name: data.data.name,
         email: data.data.email,
@@ -55,12 +50,12 @@ export default function ProfileComponent() {
       setProfile( profileData );
     }
     loadData();
-  }, [edit] )
+  }, [edit, reRender ] )
   return (
     <div>
       {
         edit &&
-        <EditProfileModal setEdit={setEdit} edit={edit} profile={profile} setProfile={setProfile}/>
+        <EditProfileModal setEdit={setEdit} edit={edit} profile={profile} setProfile={setProfile} reRender={reRender} setReRender={setReRender}/>
       }
       <Container size="xs" mt={50}style={{ position: "relative", zIndex: 1 }}>
         <div

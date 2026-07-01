@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 
 export const newDonation = async ( req, res ) => {
     try{
-        const userId = req.body.user.id;
-        const userCoordinates = req.body.user.coordinates
+        const userId = req.user.id;
+        const userCoordinates = req.user.coordinates
         
         const type = "donation";
         
@@ -21,8 +21,8 @@ export const newDonation = async ( req, res ) => {
 
 export const newRequest = async ( req, res ) => {
     try{
-        const userId = req.body.user.id;
-        const userCoordinates = req.body.user.coordinates
+        const userId = req.user.id;
+        const userCoordinates = req.user.coordinates
 
         const type = "request";
         
@@ -39,8 +39,8 @@ export const newRequest = async ( req, res ) => {
 
 export const viewOrders = async ( req, res ) => {
     try{
-        const userCoordinates = req.body.user.coordinates;
-        const userId = req.body.user.id;
+        const userCoordinates = req.user.coordinates;
+        const userId = req.user.id;
 
         const type = req.query.type; //donation and request
         const sortBy = req.query.sortBy;

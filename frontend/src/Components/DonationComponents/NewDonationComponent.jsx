@@ -25,10 +25,6 @@ export default function NewDonationComponent( { setNewDonation } ) {
   const [ payload, setPayload ] = useState( {
     qty : 0,
     expiresAt : setExpiry(),
-    user: {
-      id: "6a3e0fbf876ef54ea1bd06f1",
-      coordinates: [ 1, 2 ]
-    }
   } );
   
   return (

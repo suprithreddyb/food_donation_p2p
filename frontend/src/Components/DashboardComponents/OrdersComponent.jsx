@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import Service from '../../utils/http';
 import { Button, Card, Container, Group, Loader, MultiSelect, NativeSelect, Text } from '@mantine/core';
 import OrderDetailsModal from '../Modals/OrderDetailsModal';
+import { notifications } from '@mantine/notifications';
 
 export default function OrdersComponent() {
   const [ orders, setOrders] = useState( null );
   const [ orderDetails, setOrderDetails ] = useState( null );
   const [ showModal, setShowModal ] = useState( false );
   const [ type, setType ] = useState( [ "donation", "request" ] );
+  const [ reRender, setReRender ] = useState( false );
     
   const [ status, setStatus ] = useState( ["Active"] );
   const [ sorter, setSorter ] = useState( {
@@ -21,13 +23,6 @@ export default function OrdersComponent() {
   ])
   const service = new Service();
 
-  const userBody = {
-    user: {
-      id: "6a3e0fbf876ef54ea1bd06f1",
-      coordinates: [ 1, 2 ]
-    }
-  }
-
   const getOrderDetails = async () => {
     let url = "my/orders?"
     for ( let t of type ){
@@ -38,12 +33,19 @@ export default function OrdersComponent() {
       url = url + `status=${temp}&`
     }
     url = url + `sortBy=${sorter.sortBy}&sortType=${sorter.sortType}`;
-    const data = await service.patch( url, userBody );
+    const data = await service.get( url );
     setOrders( data.data );
   }
 
-  const deleteOrder = ( orderId ) => {
-    return;
+  const deleteOrder = async ( orderId ) => {
+    const url = `my/order/delete/${orderId}`;
+    const data = await service.delete( url );
+    notifications.show( {
+      title: data.message === "deleted order" ? "Success" : "Failed",
+      message : data.message,
+      color : data.message === "deleted order" ? "green" : "red"
+    })
+    setReRender( !reRender );
   }
 
   const displayOrders = () => {
@@ -96,7 +98,7 @@ export default function OrdersComponent() {
 
   useEffect( () => {
     getOrderDetails();
-  }, [ status, type, sorter ] )
+  }, [ status, type, sorter, reRender ] )
 
 
   

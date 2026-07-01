@@ -6,18 +6,20 @@ import {
 } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { GoogleLogin } from "@react-oauth/google";
-import { showNotification } from "@mantine/notifications";
+import { notifications, showNotification } from "@mantine/notifications";
 import Service from "../../utils/http";
 import { GOOGLE_AUTH_LOGIN } from "../../utils/urls";
 import { useDispatch, useSelector } from "react-redux";
 import { getIsLoggedIn, setUser } from "../../redux/slices/User";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function LoginPage() {
   const service = new Service();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(getIsLoggedIn);
+  const [ newUser, setNewUser ] = useState( false );
 
   const googleResponse = async (res) => {
     try {
@@ -34,6 +36,7 @@ export default function LoginPage() {
 
       const response = await service.post(GOOGLE_AUTH_LOGIN, { token });
       const data = response.data;
+      console.log( data );
 
       dispatch(
         setUser({
@@ -49,7 +52,16 @@ export default function LoginPage() {
         message: "Welcome! Login Successfully.",
         color: "green",
       });
-      navigate("/");
+      if ( data.createdNewUser  ){
+        notifications.show({
+          title  :  "WARNING",
+          message :  "Please Update Profile",
+          color :  "red"
+        })
+        navigate("/dashboard"  )
+      }
+      else ( navigate( "/"  ) ); 
+        
     } catch (error) {
       showNotification({
         title: "Error",
@@ -61,7 +73,7 @@ export default function LoginPage() {
   };
 
   if (isLoggedIn) {
-    return <Navigate to="/" />;
+    return ( data.createdNewUser ? <Navigate to="/dashboard" /> : <Navigate to="/"/> );
   }
 
   return (
