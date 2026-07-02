@@ -53,7 +53,7 @@ const Home = () => {
               marginTop: "1rem",
             }}
           >
-            Your App Name
+            Food Donation App
           </Title>
 
           <Text
@@ -74,11 +74,23 @@ fw={700}
             radius="xl"
             variant="gradient"
             gradient={{ from: "grape", to: "indigo" }}
+            mr={50}
             onClick={() =>
-              isLoggedIn ? navigate("/url/shortener") : navigate("/login")
+              isLoggedIn ? navigate("/donate") : navigate("/login")
             }
           >
-            Get Started
+            Donate
+          </Button>
+          <Button
+            size="md"
+            radius="xl"
+            variant="gradient"
+            gradient={{ from: "grape", to: "indigo" }}
+            onClick={() =>
+              isLoggedIn ? navigate("/request") : navigate("/login")
+            }
+          >
+            Request
           </Button>
         </div>
       </Container>

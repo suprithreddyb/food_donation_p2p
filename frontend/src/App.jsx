@@ -5,6 +5,9 @@ import LoginPage from './Pages/LoginPage/LoginPage';
 import './index.css';
 import PrivateRoute from './Components/PrivateRoute/PrivateRoute';
 import { HeaderMegaMenu } from './Components/Navbar/HeaderMegaMenu';
+import DonatePage from './Pages/DonatePage.jsx';
+import RequestPage from './Pages/RequestPage.jsx';
+import DashboardPage from './Pages/DashboardPage.jsx';
 
 
 function App() {
@@ -14,6 +17,9 @@ function App() {
         <Routes>
             <Route path='/' element={<Home/>}/>
             <Route path='/login' element={<LoginPage/>} />
+            <Route path = '/dashboard' element = { <DashboardPage/> } />
+            <Route path = '/donate' element = { <DonatePage/> } />
+            <Route path = 'request' element = { <RequestPage/> } />
             <Route element={<PrivateRoute/>}>
 
             </Route>
