@@ -4,9 +4,19 @@ import { Button, Container, Group } from '@mantine/core'
 import ProfileComponent from '../Components/DashboardComponents/ProfileComponent';
 import ApplicationsComponent from '../Components/DashboardComponents/ApplicationsComponent';
 import OrdersComponent from '../Components/DashboardComponents/OrdersComponent';
+import { useSelector } from "react-redux";
+import { getIsLoggedIn } from "../redux/slices/User";
+import { Navigate } from 'react-router-dom';
+
 
 export default function DashboardPage() {
   const [ component, setComponent ] = useState( "profile" );
+  const isLoggedIn = useSelector(getIsLoggedIn);
+
+  if ( !isLoggedIn ){
+    return <Navigate to="/" replace/>
+  }
+
   return (
     <div style={{
         height: "100vh",

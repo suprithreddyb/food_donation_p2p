@@ -11,6 +11,7 @@ import createRouter from "./routes/createRouter.js";
 import userRouter from "./routes/userRouter.js";
 import applicationRouter from "./routes/applicationRouter.js";
 import orderRouter from "./routes/orderRouter.js";
+import './cron/cleanup.js'
 const app = express();
 
 // middlewares
