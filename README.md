@@ -42,4 +42,5 @@ Including third party NGO's to manage storing, pickup, delivery, and organizing 
 From root:
 
 Build Command - cd backend && npm i && cd .. && cd frontend && npm i
+
 Start Command - cd backend && npm start && cd .. && cd frontend && npm run dev
